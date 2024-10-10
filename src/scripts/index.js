@@ -3,6 +3,7 @@ import { createCard } from "./card.js";
 import { openModal, closeModal, closeModalEvtListeners } from "./modal.js";
 import { enableValidation, clearValidation } from "./validation.js"
 import { getUserData, getInitialCards, editUserData, addNewCard, editAvatar } from "./api.js"
+import { renderLoading } from "./utils";
 
 // DOM узлы
 const cardsContainer = document.querySelector(".places__list");
@@ -42,14 +43,6 @@ export const validationSet = {
 }; 
 
 enableValidation(validationSet);
-
-function renderLoading(isLoading, button, buttonText='Сохранить', loadingText='Сохранение...') {
-  if (isLoading) {
-    button.textContent = loadingText;
-  } else {
-    button.textContent = buttonText;
-  }
-}
 
 const openImage = (evt) => {
   console.log(evt);
@@ -94,9 +87,8 @@ function handleNewCardFormSubmit (evt) {
     .then((res) => {
       const card = createCard(res, res.owner._id, openImage);
       cardsContainer.prepend(card);
-
+      clearValidation(newCardForm, validationSet);
       closeModal(newCardModal);
-      evt.target.reset();
     })
     .catch((err) => {
       console.log(`Что-то пошло не так: ${err}`);
@@ -140,7 +132,6 @@ profileEditButton.addEventListener("click", () => {
 cardAddButton.addEventListener("click", () => {
   newCardName.value = "";
   newCardLink.value = "";
-  clearValidation(newCardForm, validationSet);
   openModal(newCardModal);
 });
 
@@ -174,4 +165,4 @@ Promise.all([getUserData(), getInitialCards()])
 
 
 
-//Спасибо за проверку моей работы, ценные комментарии, о некоторых возможностях не знала! Спасибо еще раз!!!=)
+//Спасибо за проверку моей работы, ценные комментарии, о некоторых возможностях не знал! Спасибо еще раз!!!=)
